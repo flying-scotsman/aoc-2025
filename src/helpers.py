@@ -67,6 +67,7 @@ class Grid():
 
     def __getitem__(self, position):
         try:
+            # Remember that -1 means last element in Python! 
             return self._grid[position[0]][position[1]]
         except IndexError:
             if isinstance(self._grid[0][0], str):
