@@ -13,6 +13,24 @@ def measure_runtime(fn):
 def get_input(filename: str):
     with open(filename) as file:
         return [line.rstrip() for line in file]
+    
+def get_two_sections(filename: str, line_cast=str):
+    """
+    Read `filename` and split it into two lists at the first empty line.
+    `line_cast` is applied to each non-empty line (default returns the raw string).
+
+    Returns: (first_list, second_list)
+
+    Raises RuntimeError if no blank separator is found.
+    """
+    lines = get_input(filename)
+    try:
+        sep_idx = lines.index('')
+    except ValueError:
+        raise RuntimeError(f"No blank line separator found in {filename}")
+    first = [line_cast(l) for l in lines[:sep_idx]]
+    second = [line_cast(l) for l in lines[sep_idx + 1:]]
+    return first, second
 
 def get_two_lists(lines: list):
     first_list = []
