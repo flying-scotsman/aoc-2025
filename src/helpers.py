@@ -78,6 +78,54 @@ class Graph():
     def is_connected_cmp(self, node1, node2):
         # cmp_to_key requires a negative number for less than
         return -1 if self.is_connected(node1, node2) else 1
+    
+    def dfs(self, start_node):
+        visited = {start_node}
+        stack = [start_node]
+        while stack:
+            v = stack.pop()
+            for w in self._graph.get(v, ()):
+                if w not in visited:
+                    visited.add(w)
+                    stack.append(w)
+        return visited
+    
+    def find_connected_components(self):
+        """
+        Return a list of connected components (each as a set of nodes).
+        """
+        # collect all nodes that appear either as keys or as neighbors
+        nodes = set(self._graph.keys())
+        for nbrs in self._graph.values():
+            nodes.update(nbrs)
+
+        visited = set()
+        components = []
+
+        for start in nodes:
+            if start in visited:
+                continue
+            # BFS/DFS from start
+            stack = [start]
+            comp = set()
+            visited.add(start)
+            while stack:
+                v = stack.pop()
+                comp.add(v)
+                # neighbors from outgoing edges
+                neighbors = set(self._graph.get(v, ()))
+                # if directed, also include incoming neighbors to compute weak components
+                if self._directed:
+                    for u, nbrs in self._graph.items():
+                        if v in nbrs:
+                            neighbors.add(u)
+                for w in neighbors:
+                    if w not in visited:
+                        visited.add(w)
+                        stack.append(w)
+            components.append(comp)
+
+        return components
 
 class Grid():
     def __init__(self, grid=[]):
